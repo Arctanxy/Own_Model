@@ -1,5 +1,6 @@
 import numpy as np 
 import pandas as pd 
+import matplotlib.pyplot as plt 
 
 #随机梯度下降算法实现线性回归模型
 class linear_model(object):
@@ -20,7 +21,7 @@ class linear_model(object):
         self.output = output
 
         if in_put.shape[0] != output.shape[0]:
-            return 'In_put length should be the same with ouput length!'
+            raise Exception('In_put length should be the same with ouput length!')
         theta = np.ones([in_put.shape[1],output.shape[1]])#初始化参数theta
         for i in range(in_put.shape[0]):#遍历样本
             #按梯度下降方向进行优化
@@ -36,7 +37,7 @@ class linear_model(object):
     def predict(self,in_put):
         '''根据参数预测output'''
         if self.theta is None:
-            return 'Model not fitted!!!'
+            raise Exception('Model not fitted yet !!!')
         else:
             in_put = np.matrix(in_put.values)
             y_pred = in_put * self.theta
