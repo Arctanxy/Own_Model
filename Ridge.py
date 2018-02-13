@@ -18,7 +18,9 @@ import pandas as pd
     .T ——返回自身的转置
     .H ——返回自身的共轭转置
     .I ——返回自身的逆矩阵
+    输入的原始数据为DataFrame形式，在运算中使用np.matrix()将之转换为矩阵
 '''
+#矩阵微分算法
 def ridge_regression(x,y,lam = 0.2):
     '''
     直接使用矩阵微分来计算函数
@@ -34,9 +36,31 @@ def ridge_regression(x,y,lam = 0.2):
     w = (xtx + lam * I).I * x.T *y
     return w
 
+#随机梯度下降算法
+class ridge(object):
+    def __init__(self,learning_rate=0.1):
+        self.learning_rate = learning_rate
+    
+    def fit(self,input,output):
+        '''
+        input和ouput均为矩阵形式,公式为y = xw
+        将样本依次加入计算，公式：$\theta_j := \theta_j + \alpha (y^i - h_\theta(x^i))x^i_j$
+        '''
+        input = np.matrix(input.values)
+        output = np.matrix(output.values)
+
+        if input.shape[0] != output.shape[0]:
+            return 'Input length should be the same with ouput length!'
+        theta = np.ones([input.shape[1],output.shape[1]])#初始化参数theta
+        for i in range(input.shape[0]):#遍历样本
+            print(input[i][:].shape,output[i][:].shape)
+            #按梯度下降方向进行优化
+            theta = theta + self.learning_rate*((output[i][:]-input[i][:]*theta)*input[i][:]).T
+            print(theta)
+        
+
 if __name__ == '__main__':
-    x = np.matrix([1,2,3,4])
-    y = np.matrix([1,2,3,4])
-    w = ridge_regression(x,y,lam =0.1)
-    print(w)
-    print('y',x*w)
+    input = pd.DataFrame({'A':[1,2,3,4],'B':[2,3,4,5]})
+    output = pd.DataFrame({'C':[2,3,2,4]})
+    clf = ridge(learning_rate=0.2)
+    clf.fit(input,output)
