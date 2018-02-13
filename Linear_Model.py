@@ -12,7 +12,7 @@ class linear_model(object):
 
     def divide(self,in_put,output):
         '''
-        将数据集分为训练集和测试集
+        将数据集分为训练集和测试集，直接划分导致数据集差异较大，最好选择随机抽样
         '''
         length = in_put.shape[0]
         #依次为x_train,y_train,x_test,y_test
@@ -83,11 +83,11 @@ if __name__ == '__main__':
     
     #训练
     data = pd.read_excel(r'E:\Modeling\HEFEI\feature_engineering\managed_data_3.xlsx')
-    train = data[:1200]
-    test = data[1200:]
+    train = data[:]
+    #test = data[1500:]
     in_put = train.drop(['RA_NAME','AVG_PRICE','PRIMARY_SCHOOL','MIDDLE_SCHOOL'],axis=1).astype('float64')
     output = pd.DataFrame({'result':train['AVG_PRICE'].astype('float64')})#Series要转成dataframe
-    clf = linear_model(learning_rate=0.0001)
+    clf = linear_model(learning_rate=0.00001)
     train_metrics,test_metrics = clf.fit(in_put,output)
     print(clf.score())
 
@@ -98,9 +98,11 @@ if __name__ == '__main__':
     plt.show()
     
     #测试
+    '''
     in_put_test = test.drop(['RA_NAME','AVG_PRICE','PRIMARY_SCHOOL','MIDDLE_SCHOOL'],axis=1).astype('float64')
     output_test = pd.DataFrame({'result':test['AVG_PRICE'].astype('float64')})#Series要转成dataframe
     output_pred = clf.predict(in_put_test)  
     output_test = np.matrix(output_test)  
     error = np.abs(output_test[:][0] -  output_pred[:][0])/output_test[:][0]
     print(np.mean(error))
+    '''
